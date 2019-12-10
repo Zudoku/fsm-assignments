@@ -1,0 +1,26 @@
+note over browser:
+Browser has loaded the page
+https://fullstack-exampleapp.herokuapp.com/spa
+(html, css, javascript, notes JSON)
+and rendered the page 
+end note
+
+note over browser:
+spa.js javascript file adds an submit event handler to the form 
+end note
+
+note over browser:
+User writes something into the form
+end note
+
+note over browser:
+User presses the submit button
+Javascript event handler code is run
+javascript code inserts the note into the local copy of notes
+and redraws all notes into the DOM
+The event handler makes a POST request to submit the note to server
+end note
+
+browser->server: HTTP POST https://fullstack-exampleapp.herokuapp.com/new_note_spa { content: "macbook_pro", date: "2019-12-10T15:41:23.318Z" }
+server-->browser: 201 Created
+
