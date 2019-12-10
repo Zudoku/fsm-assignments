@@ -1,5 +1,4 @@
-
-te over browser:
+note over browser:
 Browser has loaded the page
 https://fullstack-exampleapp.herokuapp.com/notes
 (html, css, javascript, notes JSON)
