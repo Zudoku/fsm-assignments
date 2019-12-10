@@ -1,0 +1,70 @@
+
+te over browser:
+Browser has loaded the page
+https://fullstack-exampleapp.herokuapp.com/notes
+(html, css, javascript, notes JSON)
+and rendered the page 
+end note
+
+note over browser:
+User writes something into the form
+end note
+
+note over browser:
+User presses the submit button
+browser sends the input to the server
+end note
+
+browser->server: HTTP POST https://fullstack-exampleapp.herokuapp.com/new_note  note: helloworld
+
+note over server:
+Server processes the request, 
+Most likely inserts a new row into some "notes" database
+with a new note "helloworld"
+and returns a response telling the browser 
+to navigate to /notes
+end note
+
+server-->browser: HTTP 302 (/notes)
+
+
+note over browser:
+The browser navigates to 
+https://fullstack-exampleapp.herokuapp.com/notes
+end note
+
+browser->server: HTTP GET https://fullstack-exampleapp.herokuapp.com/notes
+server-->browser: HTML
+
+note over browser:
+The browser loads other resources defined in the HTML file
+end note
+
+browser->server: HTTP GET https://fullstack-exampleapp.herokuapp.com/main.css
+server-->browser: main.css
+
+browser->server: HTTP GET https://fullstack-exampleapp.herokuapp.com/main.js
+server-->browser: main.js
+
+note over browser:
+main.js javascript file executes and makes a request to server for the notes JSON data
+end note
+
+browser->server: HTTP GET https://fullstack-exampleapp.herokuapp.com/data.json
+
+note over server:
+Server responds with all the notes
+including the new note just added
+end note
+
+server-->browser: data.json
+
+note over browser:
+event handler javascript code is run
+notes are being rendered to the DOM
+end note
+
+note over browser:
+Browser has all the notes rendered,
+including the new note the user just added
+end note
