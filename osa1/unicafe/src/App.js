@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import ReactDOM from 'react-dom'
 
 const Button = ({ buttonText, onClick }) => {
   return (
@@ -20,6 +19,15 @@ const FeedBack = ({ clickGood, clickNeutral, clickBad }) => {
   )
 }
 
+const Statistic = ({ text, value }) => {
+  return (
+    <tr>
+      <td>{text}</td>
+      <td>{value}</td>
+    </tr>
+  )
+}
+
 const Statistics = ({good, neutral, bad}) => {
 
   const calculateAverage = (good, neutral, bad) => {
@@ -32,7 +40,7 @@ const Statistics = ({good, neutral, bad}) => {
 
   const calculatePositive = (good, neutral, bad) => {
     const valueAmount = good + neutral + bad
-    return (good / valueAmount) * 100
+    return '' + (good / valueAmount) * 100 + ' %'
   }
 
   const noValuesGiven = (good, neutral, bad) => {
@@ -53,24 +61,16 @@ const Statistics = ({good, neutral, bad}) => {
   return (
     <div>
       <h2> Statistics </h2>
-      <div>
-        Good {good}
-      </div>
-      <div>
-        Neutral {neutral}
-      </div>
-      <div>
-        Bad {bad}
-      </div>
-      <div>
-        All {good + neutral + bad}
-      </div>
-      <div>
-        Average {calculateAverage(good, neutral, bad)}
-      </div>
-      <div>
-        Positive {calculatePositive(good, neutral, bad)} %
-      </div>
+      <table>
+        <tbody>
+          <Statistic text="Good" value={good}/>
+          <Statistic text="Neutral" value={neutral}/>
+          <Statistic text="Bad" value={bad}/>
+          <Statistic text="All" value={good + neutral + bad}/>
+          <Statistic text="Average" value={calculateAverage(good, neutral, bad)}/>
+          <Statistic text="Positive" value={calculatePositive(good, neutral, bad)}/>
+        </tbody>
+      </table>
     </div>
   )
 }
