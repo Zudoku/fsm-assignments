@@ -21,6 +21,21 @@ const FeedBack = ({ clickGood, clickNeutral, clickBad }) => {
 }
 
 const Statistics = ({good, neutral, bad}) => {
+
+  const calculateAverage = (good, neutral, bad) => {
+    const goodValues = good * 1
+    const neutralValues = neutral * 0
+    const badValues = bad * -1
+    const valueAmount = good + neutral + bad
+    return (goodValues + neutralValues + badValues) / valueAmount
+  }
+
+  const calculatePositive = (good, neutral, bad) => {
+    const valueAmount = good + neutral + bad
+    return (good / valueAmount) * 100
+  }
+  
+
   return (
     <div>
       <h2> Statistics </h2>
@@ -32,6 +47,15 @@ const Statistics = ({good, neutral, bad}) => {
       </div>
       <div>
         Bad {bad}
+      </div>
+      <div>
+        All {good + neutral + bad}
+      </div>
+      <div>
+        Average {calculateAverage(good, neutral, bad)}
+      </div>
+      <div>
+        Positive {calculatePositive(good, neutral, bad)} %
       </div>
     </div>
   )
