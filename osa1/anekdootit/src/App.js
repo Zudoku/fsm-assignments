@@ -38,8 +38,6 @@ const App = ({ anecdotes }) => {
   const mostVotedAnecdote = anecdotes[mostVotesIndex]
   const mostVotedAnecdoteVoteAmount = votes[mostVotesIndex]
 
-  console.log(mostVotesIndex)
-
   const addVote = () => {
     const nextVotes = [...votes]
     nextVotes[selected] += 1
