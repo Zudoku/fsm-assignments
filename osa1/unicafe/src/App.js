@@ -34,7 +34,21 @@ const Statistics = ({good, neutral, bad}) => {
     const valueAmount = good + neutral + bad
     return (good / valueAmount) * 100
   }
+
+  const noValuesGiven = (good, neutral, bad) => {
+    return good === 0 && neutral === 0 && bad === 0 
+  }
   
+  if (noValuesGiven(good, neutral, bad)) {
+    return (
+      <div>
+        <h2> Statistics </h2>
+        <div>
+          No feedback given yet
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div>
