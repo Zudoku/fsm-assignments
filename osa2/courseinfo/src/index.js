@@ -9,33 +9,43 @@ const Header = (props) => {
     )
 }
 
-const Part = (props) => {
-    const part = props.part
+const Part = ({ part }) => {
     return (
         <p>
-            {part.partName} {part.amountOfExercises}
+            {part.name} {part.amountOfExercises}
         </p>
     )
 }
 
-const Content = (props) => {
-    const course = props.course
+const Content = ({ course }) => {
+    const parts = () => course.parts.map(part => 
+        <Part key={part.id} part={part} />
+    )
     return (
         <div>
-            <Part part={course.parts[0]} />
-            <Part part={course.parts[1]} />
-            <Part part={course.parts[2]} />
+            {parts()}
         </div>
     )
 }
 
-const Total = (props) => {
-    const course = props.course
+const Total = ({ course }) => {
+    const amounts = course.parts.map(part => part.amountOfExercises)
+    const finalAmount = amounts.reduce((previous, current) => previous + current, 0)
     return (
         <p>
-            Number of exercises {course.parts[0].amountOfExercises + course.parts[1].amountOfExercises + course.parts[2].amountOfExercises}
+            Number of exercises {finalAmount}
         </p>
 
+    )
+}
+
+const Course = ({ course }) => {
+    return (
+        <div>
+            <Header course={course} />
+            <Content course={course} />
+            <Total course={course} />
+        </div>
     )
 }
 
@@ -44,25 +54,26 @@ const App = () => {
         name: 'Half Stack application development',
         parts: [
             {
-                partName: 'Fundamentals of React',
-                amountOfExercises: 10
+                name: 'Fundamentals of React',
+                amountOfExercises: 10,
+                id: 1
             },
             {
-                partName: 'Using props to pass data',
-                amountOfExercises: 7
+                name: 'Using props to pass data',
+                amountOfExercises: 7,
+                id: 2
             },
             {
-                partName: 'State of a component',
-                amountOfExercises: 14
+                name: 'State of a component',
+                amountOfExercises: 14,
+                id: 3
             }
         ]
     }
 
     return (
         <div>
-            <Header course={course} />
-            <Content course={course} />
-            <Total course={course} />
+            <Course course={course} />
         </div>
     )
 }
