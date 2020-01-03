@@ -1,26 +1,54 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from 'react'
 
-function App() {
+const PhoneNumberList = ({ persons }) => {
+  const personsToRows = () => persons.map(person => <div key={person.name}>{person.name}</div>)
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    <div>{personsToRows()}</div>
+  )
 }
+
+const App = () => {
+  const [ persons, setPersons] = useState([
+    { name: 'Arto Hellas' }
+  ]) 
+  const [ newName, setNewName ] = useState('')
+
+  const onSubmit = (event) => {
+    const newPresons = [ ...persons, {
+      name: newName
+    }]
+    setPersons(newPresons)
+    setNewName('')
+
+    event.preventDefault()
+  }
+
+  return (
+    <div>
+      <h2>Phonebook</h2>
+      <form onSubmit={onSubmit} >
+        <div>
+          name: 
+          <input 
+            onChange={(event) => { setNewName(event.target.value) }}
+            value={newName}
+          />
+        </div>
+        <div>
+          <button
+            type="submit"
+          >
+              add
+          </button>
+        </div>
+      </form>
+      <h2>Numbers</h2>
+      <PhoneNumberList persons={persons} />
+    </div>
+  )
+
+}
+
+
 
 export default App;
