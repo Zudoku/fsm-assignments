@@ -7,13 +7,41 @@ const PhoneNumberList = ({ persons }) => {
   )
 }
 
+const AddNumberForm = ({ onSubmit, onNameChanged, onNumberChanged}) => {
+  return (
+    <form onSubmit={onSubmit} >
+        <div>
+          name: 
+          <input 
+            onChange={onNameChanged}
+            value={newName}
+          />
+        </div>
+        <div>
+          <button
+            type="submit"
+          >
+              add
+          </button>
+        </div>
+      </form>
+  )
+}
+
 const App = () => {
   const [ persons, setPersons] = useState([
     { name: 'Arto Hellas' }
   ]) 
   const [ newName, setNewName ] = useState('')
 
-  const onSubmit = (event) => {
+  const onSubmitAddNumber = (event) => {
+    const foundPerson = persons.find( x => x.name.toLowerCase() === newName.toLowerCase())
+    if (foundPerson !== undefined) {
+      alert(`${newName} can already be found from the phonebook.`)
+      event.preventDefault()
+      return
+    }
+
     const newPresons = [ ...persons, {
       name: newName
     }]
@@ -26,22 +54,10 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-      <form onSubmit={onSubmit} >
-        <div>
-          name: 
-          <input 
-            onChange={(event) => { setNewName(event.target.value) }}
-            value={newName}
-          />
-        </div>
-        <div>
-          <button
-            type="submit"
-          >
-              add
-          </button>
-        </div>
-      </form>
+      <AddNumberForm
+        onSubmit={onSubmitAddNumber}
+        onNameChanged={(event) => { setNewName(event.target.value) }} 
+      />
       <h2>Numbers</h2>
       <PhoneNumberList persons={persons} />
     </div>
