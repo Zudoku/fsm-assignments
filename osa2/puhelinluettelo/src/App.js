@@ -1,4 +1,5 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
+import axios from 'axios'
 
 const PhoneNumberList = ({ persons }) => {
 const personsToRows = () => persons.map(person => <div key={person.name}>{person.name}  {person.phoneNumber}</div>)
@@ -45,12 +46,7 @@ const FilterNumbersForm = ({ onChange }) => {
 }
 
 const App = () => {
-  const [ persons, setPersons] = useState([
-    { name: 'Arttu Siren', phoneNumber: '+358-40-40404040' },
-    { name: 'Frederik karaoke', phoneNumber: '+358-55-555555' },
-    { name: 'Ilkka Lipsanen', phoneNumber: '+358-60-60606060' },
-    { name: 'Fernando Siren', phoneNumber: '+358-70-70707070' },
-  ]) 
+  const [ persons, setPersons] = useState([]) 
   const [ newName, setNewName ] = useState('')
   const [ newNumber, setNewNumber ] = useState('')
   const [ filteredText, setFilteredText ] = useState('')
@@ -87,6 +83,26 @@ const App = () => {
     const filter = filteredText.toLowerCase()
     return comparedName.includes(filter) || comparedPhoneNumber.includes(filter)
   })
+
+  const mapBackendPersonToFrontEndPerson = (person) => {
+    return {
+      name: person.name,
+      phoneNumber: person.number
+    }
+  }
+
+  const refreshPhoneNumbersEffect = () => {
+    axios
+      .get('http://localhost:3001/persons')
+      .then(response => {
+        // Because the backend data structure is different from what we previously defined, we need to map it
+        const fetchedPersons = response.data.map(person => mapBackendPersonToFrontEndPerson(person))
+        setPersons(fetchedPersons)
+      })
+  }
+
+  // Load phone number list initially
+  useEffect(refreshPhoneNumbersEffect, [])
 
   return (
     <div>
