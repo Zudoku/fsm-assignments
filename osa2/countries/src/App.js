@@ -13,7 +13,56 @@ const CountryFilter = ({ onChangeFilter, filterValue }) => {
 
 const CountryList = () => {
   return (
-    <div></div>
+    <div>list of 2...10</div>
+  )
+}
+
+const CountryInformation = () => {
+  return (
+    <div>information about 1</div>
+  )
+}
+
+const CountryInformationContainer = ({ filteredCountries }) => {
+
+  const broadFilterContent = () => {
+    return (
+      <div>Filter too broad, please be more specific</div>
+    )
+  }
+
+  const noCountriesFoundContent = () => {
+    return (
+      <div>No such countries found</div>
+    )
+  }
+
+  const listContent = () => {
+    return (
+      <CountryList />
+    )
+  }
+
+  const articleContent = () => {
+    return (
+      <CountryInformation />
+    )
+  }
+
+  const renderContent = () => {
+    if (filteredCountries.length === 1) {
+      return articleContent()
+    } else if (filteredCountries.length === 0) {
+      return noCountriesFoundContent()
+    } else if (filteredCountries.length <= 10) {
+      return listContent()
+    } else {
+      return broadFilterContent()
+    }
+  }
+
+  return (
+    <div>{renderContent()}</div>
   )
 }
 
@@ -28,12 +77,24 @@ function App() {
       })
   }
 
+  const filteredCountries = countries.filter(x => {
+    const comparedCountry = x.name.toLowerCase()
+    const filterValue = filter.toLowerCase()
+    return comparedCountry.includes(filterValue)
+  })
+
+  // Fetch countries at the start
   useEffect(refreshCountries, [])
 
   return (
     <div>
-      <CountryFilter />
-      <CountryList />
+      <CountryFilter
+        onChangeFilter={(event) => setFilter(event.target.value)}
+        filterValue={filter}
+      />
+      <CountryInformationContainer
+        filteredCountries={filteredCountries}
+      />
     </div>
   );
 }
