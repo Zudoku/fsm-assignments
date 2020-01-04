@@ -11,16 +11,25 @@ const CountryFilter = ({ onChangeFilter, filterValue }) => {
   )
 }
 
-const CountryListRow = ({ country }) => {
+const CountryListRow = ({ country, onClick }) => {
   return (
-  <div>{country.name}</div>
+  <div>
+    {country.name}
+    <button onClick={onClick} >Select</button>
+  </div>
   )
 }
 
-const CountryList = ({ countries }) => {
+const CountryList = ({ countries, onClickCountry }) => {
 
   const renderRows = () => {
-    return countries.map(x => <CountryListRow key={x.alpha2Code} country={x} />)
+    return countries.map(x => 
+      <CountryListRow 
+        key={x.alpha2Code}
+        onClick={(event) => onClickCountry(event, x.name)}
+        country={x}
+      />
+    )
   }
 
   return (
@@ -48,7 +57,7 @@ const CountryInformation = ({ country }) => {
   )
 }
 
-const CountryInformationContainer = ({ filteredCountries }) => {
+const CountryInformationContainer = ({ filteredCountries, onClickCountryList }) => {
 
   const broadFilterContent = () => {
     return (
@@ -64,7 +73,7 @@ const CountryInformationContainer = ({ filteredCountries }) => {
 
   const listContent = () => {
     return (
-      <CountryList countries={filteredCountries} />
+      <CountryList countries={filteredCountries} onClickCountry={onClickCountryList} />
     )
   }
 
@@ -108,6 +117,11 @@ function App() {
     return comparedCountry.includes(filterValue)
   })
 
+  const onClickCountryList = (event, countryName) => {
+    setFilter(countryName)
+    event.preventDefault()
+  }
+
   // Fetch countries at the start
   useEffect(refreshCountries, [])
 
@@ -120,6 +134,7 @@ function App() {
       <hr />
       <CountryInformationContainer
         filteredCountries={filteredCountries}
+        onClickCountryList={onClickCountryList}
       />
     </div>
   );
