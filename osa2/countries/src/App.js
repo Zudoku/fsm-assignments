@@ -11,15 +11,40 @@ const CountryFilter = ({ onChangeFilter, filterValue }) => {
   )
 }
 
-const CountryList = () => {
+const CountryListRow = ({ country }) => {
   return (
-    <div>list of 2...10</div>
+  <div>{country.name}</div>
   )
 }
 
-const CountryInformation = () => {
+const CountryList = ({ countries }) => {
+
+  const renderRows = () => {
+    return countries.map(x => <CountryListRow key={x.alpha2Code} country={x} />)
+  }
+
   return (
-    <div>information about 1</div>
+    <div>{renderRows()}</div>
+  )
+}
+
+const CountryInformation = ({ country }) => {
+  const renderLanguageRows = () => {
+  return country.languages.map(x => <li key={x.name} >{x.name} ({x.nativeName})</li>)
+  }
+
+  return (
+    <div>
+      <h2>{country.name}</h2>
+      <div>Capital: {country.capital}</div><br/>
+      <div>Population: {country.population}</div><br/>
+      <div>This country is located in: {country.region} ({country.subregion})</div><br/>
+      <b>Languages: </b><br/>
+      <ul>
+        {renderLanguageRows()}
+      </ul>
+      <img src={country.flag} alt={country.name} width="200px" />
+    </div>
   )
 }
 
@@ -27,25 +52,25 @@ const CountryInformationContainer = ({ filteredCountries }) => {
 
   const broadFilterContent = () => {
     return (
-      <div>Filter too broad, please be more specific</div>
+      <div>Filter too broad, please be more specific!</div>
     )
   }
 
   const noCountriesFoundContent = () => {
     return (
-      <div>No such countries found</div>
+      <div>No such country found :(</div>
     )
   }
 
   const listContent = () => {
     return (
-      <CountryList />
+      <CountryList countries={filteredCountries} />
     )
   }
 
   const articleContent = () => {
     return (
-      <CountryInformation />
+      <CountryInformation country={filteredCountries[0]}/>
     )
   }
 
@@ -92,6 +117,7 @@ function App() {
         onChangeFilter={(event) => setFilter(event.target.value)}
         filterValue={filter}
       />
+      <hr />
       <CountryInformationContainer
         filteredCountries={filteredCountries}
       />
