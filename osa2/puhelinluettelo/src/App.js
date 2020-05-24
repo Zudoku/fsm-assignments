@@ -8,6 +8,32 @@ const personToRow = (person, onRemove) => (
   </div>
 )
 
+const MessageHeader = ({ message }) => {
+  if (message === null) {
+    return null
+  } else {
+    const errorStyle = {
+      background: '#DC143C',
+      padding: '10px',
+      margin: '5px'
+    }
+
+    const successStyle = {
+      background: '#7FFF00',
+      padding: '10px',
+      margin: '5px'
+    }
+
+    const messageStyle = message.isError ? errorStyle : successStyle
+
+    return (
+      <div style={messageStyle}>
+        { message.text }
+      </div>
+    )
+  }
+}
+
 const PhoneNumberList = ({ persons, onRemove }) => {
   return (
     <div>
@@ -58,6 +84,7 @@ const App = () => {
   const [ newName, setNewName ] = useState('')
   const [ newNumber, setNewNumber ] = useState('')
   const [ filteredText, setFilteredText ] = useState('')
+  const [ message, setMessage] = useState(null)
 
   const onSubmitAddNumber = (event) => {
     const foundPerson = persons.find( x => x.name.toLowerCase() === newName.toLowerCase())
@@ -71,6 +98,11 @@ const App = () => {
           .then(updatedPerson => {
             const newPersons = persons.map((x) => x.id === updatedPerson.id ? updatedPerson : x)
             setPersons(newPersons)
+
+            setMessage({ isError: false, text: `Updated ${updatedPerson.name}'s phone number to ${updatedPerson.number}` })
+            setTimeout(() => {
+              setMessage(null)
+            }, 3000)
             // Reset the form
             setNewName('')
             setNewNumber('')
@@ -93,10 +125,13 @@ const App = () => {
 
     personService
       .create(newPerson)
-      .then(response => {
-        const createdPerson = response.data
+      .then(createdPerson => {
         const newPersons = [ ...persons, createdPerson]
         setPersons(newPersons)
+        setMessage({ isError: false, text: `Added ${createdPerson.name}` })
+        setTimeout(() => {
+          setMessage(null)
+        }, 3000)
     })
     // Reset the form
     setNewName('')
@@ -116,7 +151,11 @@ const App = () => {
       .remove(id)
       .then(response => {
         const personsNow = persons.filter((x) => x.id !== id)
-        setPersons(personsNow) 
+        setPersons(personsNow)
+        setMessage({ isError: false, text: `Removed ${name}` })
+        setTimeout(() => {
+          setMessage(null)
+        }, 3000)
       }) 
   }
 
@@ -140,6 +179,7 @@ const App = () => {
   return (
     <div>
       <h2>Add a contact</h2>
+      <MessageHeader message={message} />
       <AddNumberForm
         newName={newName}
         newNumber={newNumber}
