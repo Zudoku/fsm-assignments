@@ -63,7 +63,19 @@ const App = () => {
     const foundPerson = persons.find( x => x.name.toLowerCase() === newName.toLowerCase())
     // Check if already found
     if (foundPerson !== undefined) {
-      alert(`${newName} can already be found from the phonebook.`)
+      const userConfirmation = window.confirm(`${newName} can already be found from the phonebook. Do you want to replace the old phone number (${foundPerson.number}) with a new one (${newNumber})?`)
+      if (userConfirmation) {
+        const updatePayload = { ...foundPerson, number: newNumber}
+        console.log(updatePayload)
+        personService.update(foundPerson.id, updatePayload)
+          .then(updatedPerson => {
+            const newPersons = persons.map((x) => x.id === updatedPerson.id ? updatedPerson : x)
+            setPersons(newPersons)
+            // Reset the form
+            setNewName('')
+            setNewNumber('')
+          })
+      }
       event.preventDefault()
       return
     }
@@ -95,7 +107,7 @@ const App = () => {
 
   const onRemovePerson = (id, name, e) => {
     const userConfirmation = window.confirm(`Remove ${name} from contacts?`)
-    
+
     if (!userConfirmation) {
       return
     }
