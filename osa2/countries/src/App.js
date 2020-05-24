@@ -38,8 +38,38 @@ const CountryList = ({ countries, onClickCountry }) => {
 }
 
 const CountryInformation = ({ country }) => {
+
+  const weatherStackApiKey = process.env.REACT_APP_API_KEY
+  const [capitalWeatherTemperature, setCapitalWeatherTemperature] = useState([])
+
+  const refreshCapitalWeather = () => {
+    axios.get(`http://api.weatherstack.com/current?access_key=${weatherStackApiKey}&query=${country.capital}`)
+    .then((response) => {
+      setCapitalWeatherTemperature(response.data.current)
+    })
+}
+
+  useEffect(refreshCapitalWeather, [])
+
   const renderLanguageRows = () => {
-  return country.languages.map(x => <li key={x.name} >{x.name} ({x.nativeName})</li>)
+    return country.languages.map(x => <li key={x.name} >{x.name} ({x.nativeName})</li>)
+  }
+
+  const renderWeatherDescriptionRows = () => {
+    const descriptions = capitalWeatherTemperature.weather_descriptions
+    if (descriptions === undefined) {
+      return <div></div>
+    } else {
+      return descriptions.map(x => <div key={x}>{x}</div>)
+    }
+  }
+
+  const renderTemperature = () => {
+    if (Array.isArray(capitalWeatherTemperature)) {
+      return <div></div>
+    } else {
+      return <div>Temperature: {capitalWeatherTemperature.temperature} C, feels like: {capitalWeatherTemperature.feelslike} C</div>
+    }
   }
 
   return (
@@ -53,6 +83,13 @@ const CountryInformation = ({ country }) => {
         {renderLanguageRows()}
       </ul>
       <img src={country.flag} alt={country.name} width="200px" />
+      <h3>Weather in {country.name}'s capital, {country.capital}</h3>
+      <div>
+        {renderTemperature()}
+      </div><br/>
+      <div>
+        {renderWeatherDescriptionRows()}
+      </div>
     </div>
   )
 }
