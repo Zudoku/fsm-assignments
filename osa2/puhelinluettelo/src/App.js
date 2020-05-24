@@ -1,10 +1,18 @@
 import React, { useState, useEffect } from 'react'
-import axios from 'axios'
+import personService from './services/persons'
 
-const PhoneNumberList = ({ persons }) => {
-const personsToRows = () => persons.map(person => <div key={person.name}>{person.name}  {person.phoneNumber}</div>)
+
+const personToRow = (person, onRemove) => (
+  <div>
+    {person.name}  {person.number} <button onClick={(e) => onRemove(person.id, person.name, e)}>Remove from contacts</button>
+  </div>
+)
+
+const PhoneNumberList = ({ persons, onRemove }) => {
   return (
-    <div>{personsToRows()}</div>
+    <div>
+      { persons.map(person => <div key={person.name}>{personToRow(person, onRemove)}</div>) }
+    </div>
   )
 }
 
@@ -66,38 +74,51 @@ const App = () => {
       return
     }
 
-    const newPresons = [ ...persons, {
+    const newPerson = {
       name: newName,
-      phoneNumber: newNumber
-    }]
-    setPersons(newPresons)
+      number: newNumber
+    }
+
+    personService
+      .create(newPerson)
+      .then(response => {
+        const createdPerson = response.data
+        const newPersons = [ ...persons, createdPerson]
+        setPersons(newPersons)
+    })
+    // Reset the form
     setNewName('')
     setNewNumber('')
 
     event.preventDefault()
   }
 
+  const onRemovePerson = (id, name, e) => {
+    const userConfirmation = window.confirm(`Remove ${name} from contacts?`)
+    
+    if (!userConfirmation) {
+      return
+    }
+
+    personService
+      .remove(id)
+      .then(response => {
+        const personsNow = persons.filter((x) => x.id !== id)
+        setPersons(personsNow) 
+      }) 
+  }
+
   const filteredPersons = persons.filter((x) => {
     const comparedName = x.name.toLowerCase()
-    const comparedPhoneNumber = x.phoneNumber.toLowerCase()
+    const comparedPhoneNumber = x.number.toLowerCase()
     const filter = filteredText.toLowerCase()
     return comparedName.includes(filter) || comparedPhoneNumber.includes(filter)
   })
 
-  const mapBackendPersonToFrontEndPerson = (person) => {
-    return {
-      name: person.name,
-      phoneNumber: person.number
-    }
-  }
-
   const refreshPhoneNumbersEffect = () => {
-    axios
-      .get('http://localhost:3001/persons')
-      .then(response => {
-        // Because the backend data structure is different from what we previously defined, we need to map it
-        const fetchedPersons = response.data.map(person => mapBackendPersonToFrontEndPerson(person))
-        setPersons(fetchedPersons)
+    personService.getAll()
+      .then(persons => {
+        setPersons(persons)
       })
   }
 
@@ -118,7 +139,10 @@ const App = () => {
       <h2>Filter contacts</h2>
       <FilterNumbersForm onChange={(event) => setFilteredText(event.target.value)}/>
       <h2>Contacts</h2>
-      <PhoneNumberList persons={filteredPersons} />
+      <PhoneNumberList 
+        persons={filteredPersons} 
+        onRemove={onRemovePerson} 
+      />
     </div>
   )
 
