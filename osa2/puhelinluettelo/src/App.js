@@ -106,7 +106,13 @@ const App = () => {
             // Reset the form
             setNewName('')
             setNewNumber('')
+          }).catch(error => {
+            setMessage({ isError: true, text: `Failed to update ${foundPerson.name}'s information!` })
+            setTimeout(() => {
+              setMessage(null)
+            }, 3000)
           })
+          
       }
       event.preventDefault()
       return
@@ -132,7 +138,12 @@ const App = () => {
         setTimeout(() => {
           setMessage(null)
         }, 3000)
-    })
+      }).catch(error => {
+        setMessage({ isError: true, text: `Failed to create ${newPerson.name}!` })
+        setTimeout(() => {
+          setMessage(null)
+        }, 3000)
+      })
     // Reset the form
     setNewName('')
     setNewNumber('')
@@ -156,7 +167,12 @@ const App = () => {
         setTimeout(() => {
           setMessage(null)
         }, 3000)
-      }) 
+      }).catch(error => {
+        setMessage({ isError: true, text: `Failed to remove ${name} from contacts!`})
+        setTimeout(() => {
+          setMessage(null)
+        }, 3000)
+      })
   }
 
   const filteredPersons = persons.filter((x) => {
