@@ -1,0 +1,3 @@
+[submodule "osa3/saft-halt"]
+	path = osa3/saft-halt
+	url = https://github.com/Zudoku/saft-halt
